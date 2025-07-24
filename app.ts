@@ -13,7 +13,7 @@ const ONE_TRILLION = 1000000000000; //     1.000.000.000.000 (12)
 const ONE_QUADRILLION = 1000000000000000; // 1.000.000.000.000.000 (15)
 const MAX = 9007199254740992; // 9.007.199.254.740.992 (15)
 
-enum LESS_THAN_TWENTY {
+const LESS_THAN_TWENTY: string[] = [
   "zero",
   "one",
   "two",
@@ -34,9 +34,9 @@ enum LESS_THAN_TWENTY {
   "seventeen",
   "eighteen",
   "nineteen",
-}
+]
 
-enum TENTHS_LESS_THAN_HUNDRED {
+const TENTHS_LESS_THAN_HUNDRED: string[] = [
   "zero",
   "ten",
   "twenty",
@@ -47,7 +47,7 @@ enum TENTHS_LESS_THAN_HUNDRED {
   "seventy",
   "eighty",
   "ninety",
-}
+]
 
 /**
  * Converts an integer into words.
@@ -57,7 +57,7 @@ enum TENTHS_LESS_THAN_HUNDRED {
  * @param {boolean} [asOrdinal] - Deprecated, use toWordsOrdinal() instead!
  * @returns {string}
  */
-function toWords(number: number, asOrdinal: string): string {
+function toWords(number: number, asOrdinal: boolean): string {
   var words;
   var num = parseInt(number.toString(), 10);
 
