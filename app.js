@@ -14,6 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isUser = void 0;
 const axios_1 = __importDefault(require("axios"));
+var IGender;
+(function (IGender) {
+    IGender["male"] = "male";
+    IGender["famale"] = "famale";
+})(IGender || (IGender = {}));
 function isCoordinates(coords) {
     return (typeof coords === "object" &&
         coords !== null &&
@@ -115,6 +120,7 @@ function requestApi() {
             if (!isUserArray(req.data.users)) {
                 console.error("Request Type Error");
             }
+            console.log(req.data.users);
             return req.data.users;
         }
         catch (error) {
