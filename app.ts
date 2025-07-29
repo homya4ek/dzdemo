@@ -211,7 +211,7 @@ async function requestApi(): Promise<IUser[] | null> {
     if (!isUserArray(req.data.users)) {
       console.error("Request Type Error");
     }
-    console.log(req.data.user)
+    console.log(req.data.users)
     return req.data.users;
   } catch (error) {
     console.log(error);
