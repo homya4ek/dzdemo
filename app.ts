@@ -14,7 +14,7 @@ class MyMap {
     this.size = 0;
   }
 
-  add(key: string, value: number) {
+  set(key: string, value: number) {
     const index = this.getBacketIndexKey(key);
     const newNode: IItemValue = { key, value, nextItem: null };
 
@@ -84,6 +84,6 @@ class MyMap {
 }
 
 let weatherMap = new MyMap();
-weatherMap.add("London", 20);
-weatherMap.add("Berlin", 25);
+weatherMap.set("London", 20);
+weatherMap.set("Berlin", 25);
 console.log(weatherMap.get("London"));
