@@ -5,7 +5,7 @@ class MyMap {
         this.buckets = new Array(this.BACKETS_COUNT).fill(null);
         this.size = 0;
     }
-    add(key, value) {
+    set(key, value) {
         const index = this.getBacketIndexKey(key);
         const newNode = { key, value, nextItem: null };
         if (!this.buckets[index]) {
@@ -45,6 +45,31 @@ class MyMap {
         this.buckets = new Array(this.BACKETS_COUNT).fill(null);
         this.size = 0;
     }
+    getSize() {
+        return this.size;
+    }
+    delete(key) {
+        const index = this.getBacketIndexKey(key);
+        let current = this.buckets[index];
+        let prev = null;
+        while (current) {
+            if (this.keysEquals(current.key, key)) {
+                if (prev === null) {
+                    // Если это первый элемент в цепочке
+                    this.buckets[index] = current.nextItem;
+                }
+                else {
+                    // Если это не первый элемент
+                    prev.nextItem = current.nextItem;
+                }
+                this.size--;
+                return true;
+            }
+            prev = current;
+            current = current.nextItem;
+        }
+        return false; // Ключ не найден
+    }
     getBacketIndexKey(key) {
         return this.hash(key) % this.BACKETS_COUNT;
     }
@@ -65,6 +90,9 @@ class MyMap {
     }
 }
 let weatherMap = new MyMap();
-weatherMap.add("London", 20);
-weatherMap.add("Berlin", 25);
+weatherMap.set("London", 20);
+weatherMap.set("asdfasdf", 20);
+weatherMap.set("Berlin", 25);
 console.log(weatherMap.get("London"));
+console.log(weatherMap.delete("asdfasdf"));
+console.log(weatherMap.get("asdfasdf"));

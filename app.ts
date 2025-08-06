@@ -5,7 +5,7 @@ interface IItemValue {
 }
 
 class MyMap {
-  private buckets: IItemValue[];
+  private buckets: (IItemValue | null)[];
   private size: number;
   private readonly BACKETS_COUNT: number = 16;
 
@@ -61,6 +61,28 @@ class MyMap {
     return this.size;
   }
 
+  delete(key: string) {
+    const index = this.getBacketIndexKey(key);
+    let current: IItemValue | null = this.buckets[index];
+    let prev: IItemValue | null = null;
+    while (current) {
+      if (this.keysEquals(current.key, key)) {
+        if (prev === null) {
+          // Если это первый элемент в цепочке
+          this.buckets[index] = current.nextItem;
+        } else {
+          // Если это не первый элемент
+          prev.nextItem = current.nextItem;
+        }
+        this.size--;
+        return true;
+      }
+      prev = current;
+      current = current.nextItem;
+    }
+    return false; // Ключ не найден
+  }
+
   private getBacketIndexKey(key: string) {
     return this.hash(key) % this.BACKETS_COUNT;
   }
@@ -85,5 +107,8 @@ class MyMap {
 
 let weatherMap = new MyMap();
 weatherMap.set("London", 20);
+weatherMap.set("asdfasdf", 20);
 weatherMap.set("Berlin", 25);
 console.log(weatherMap.get("London"));
+console.log(weatherMap.delete("asdfasdf"));
+console.log(weatherMap.get("asdfasdf"));
