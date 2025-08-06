@@ -57,6 +57,10 @@ class MyMap {
     this.size = 0;
   }
 
+  getSize(): number {
+    return this.size;
+  }
+
   private getBacketIndexKey(key: string) {
     return this.hash(key) % this.BACKETS_COUNT;
   }
