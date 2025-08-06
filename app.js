@@ -1,132 +1,98 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isUser = void 0;
-const axios_1 = __importDefault(require("axios"));
-var IGender;
-(function (IGender) {
-    IGender["male"] = "male";
-    IGender["famale"] = "famale";
-})(IGender || (IGender = {}));
-function isCoordinates(coords) {
-    return (typeof coords === "object" &&
-        coords !== null &&
-        typeof coords.lat === "number" &&
-        typeof coords.lng === "number");
-}
-function isHair(hair) {
-    return (typeof hair === "object" &&
-        hair !== null &&
-        typeof hair.color === "string" &&
-        typeof hair.type === "string");
-}
-function isAddress(address) {
-    return (typeof address === "object" &&
-        address !== null &&
-        typeof address.address === "string" &&
-        typeof address.city === "string" &&
-        typeof address.state === "string" &&
-        typeof address.stateCode === "string" &&
-        typeof address.postalCode === "string" &&
-        isCoordinates(address.coordinates) &&
-        typeof address.country === "string");
-}
-function isBank(bank) {
-    return (typeof bank === "object" &&
-        bank !== null &&
-        typeof bank.cardExpire === "string" &&
-        typeof bank.cardNumber === "string" &&
-        typeof bank.cardType === "string" &&
-        typeof bank.currency === "string" &&
-        typeof bank.iban === "string");
-}
-function isCompanyAddress(addr) {
-    return (typeof addr === "object" &&
-        addr !== null &&
-        typeof addr.address === "string" &&
-        typeof addr.city === "string" &&
-        typeof addr.state === "string" &&
-        typeof addr.stateCode === "string" &&
-        typeof addr.postalCode === "string" &&
-        isCoordinates(addr.coordinates) &&
-        typeof addr.country === "string");
-}
-function isCompany(company) {
-    return (typeof company === "object" &&
-        company !== null &&
-        typeof company.department === "string" &&
-        typeof company.name === "string" &&
-        typeof company.title === "string" &&
-        isCompanyAddress(company.address));
-}
-function isCrypto(crypto) {
-    return (typeof crypto === "object" &&
-        crypto !== null &&
-        typeof crypto.coin === "string" &&
-        typeof crypto.wallet === "string" &&
-        typeof crypto.network === "string");
-}
-function isUser(user) {
-    return (typeof user === "object" &&
-        user !== null &&
-        typeof user.id === "number" &&
-        typeof user.firstName === "string" &&
-        typeof user.lastName === "string" &&
-        typeof user.maidenName === "string" &&
-        typeof user.age === "number" &&
-        typeof user.gender === "string" &&
-        typeof user.email === "string" &&
-        typeof user.phone === "string" &&
-        typeof user.username === "string" &&
-        typeof user.password === "string" &&
-        typeof user.birthDate === "string" &&
-        typeof user.image === "string" &&
-        typeof user.bloodGroup === "string" &&
-        typeof user.height === "number" &&
-        typeof user.weight === "number" &&
-        typeof user.eyeColor === "string" &&
-        isHair(user.hair) &&
-        typeof user.ip === "string" &&
-        isAddress(user.address) &&
-        typeof user.macAddress === "string" &&
-        typeof user.university === "string" &&
-        isBank(user.bank) &&
-        isCompany(user.company) &&
-        typeof user.ein === "string" &&
-        typeof user.ssn === "string" &&
-        typeof user.userAgent === "string" &&
-        isCrypto(user.crypto) &&
-        typeof user.role === "string");
-}
-exports.isUser = isUser;
-function isUserArray(data) {
-    return Array.isArray(data) && data.every(isUser);
-}
-function requestApi() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const req = yield axios_1.default.get("https://dummyjson.com/users");
-            if (!isUserArray(req.data.users)) {
-                console.error("Request Type Error");
+class MyMap {
+    constructor() {
+        this.BACKETS_COUNT = 16;
+        this.buckets = new Array(this.BACKETS_COUNT).fill(null);
+        this.size = 0;
+    }
+    set(key, value) {
+        const index = this.getBacketIndexKey(key);
+        const newNode = { key, value, nextItem: null };
+        if (!this.buckets[index]) {
+            this.buckets[index] = newNode;
+        }
+        else {
+            let current = this.buckets[index];
+            let prev = null;
+            while (current) {
+                if (this.keysEquals(current.key, key)) {
+                    current.value = value;
+                    return;
+                }
+                prev = current;
+                current = current.nextItem || null;
             }
-            console.log(req.data.users);
-            return req.data.users;
+            if (prev)
+                prev.nextItem = newNode;
         }
-        catch (error) {
-            console.log(error);
-            return null;
+        this.size++;
+    }
+    get(key) {
+        const index = this.getBacketIndexKey(key);
+        let current = this.buckets[index];
+        while (current) {
+            if (this.keysEquals(current.key, key)) {
+                return current.value;
+            }
+            current = current.nextItem || null;
         }
-    });
+        return undefined;
+    }
+    has(key) {
+        return this.get(key) !== undefined;
+    }
+    clear() {
+        this.buckets = new Array(this.BACKETS_COUNT).fill(null);
+        this.size = 0;
+    }
+    getSize() {
+        return this.size;
+    }
+    delete(key) {
+        const index = this.getBacketIndexKey(key);
+        let current = this.buckets[index];
+        let prev = null;
+        while (current) {
+            if (this.keysEquals(current.key, key)) {
+                if (prev === null) {
+                    // Если это первый элемент в цепочке
+                    this.buckets[index] = current.nextItem;
+                }
+                else {
+                    // Если это не первый элемент
+                    prev.nextItem = current.nextItem;
+                }
+                this.size--;
+                return true;
+            }
+            prev = current;
+            current = current.nextItem;
+        }
+        return false; // Ключ не найден
+    }
+    getBacketIndexKey(key) {
+        return this.hash(key) % this.BACKETS_COUNT;
+    }
+    hash(key) {
+        const keyString = String(key);
+        let hash = 0;
+        for (let i = 0; i < keyString.length; i++) {
+            hash = (hash << 5) - hash + keyString.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash);
+    }
+    keysEquals(key1, key2) {
+        if (typeof key1 === "object" && typeof key2 === "object") {
+            return key1 === key2;
+        }
+        return key1 === key2;
+    }
 }
-requestApi();
+let weatherMap = new MyMap();
+weatherMap.set("London", 20);
+weatherMap.set("asdfasdf", 20);
+weatherMap.set("Berlin", 25);
+console.log(weatherMap.get("London"));
+console.log(weatherMap.delete("asdfasdf"));
+console.log(weatherMap.get("asdfasdf"));
